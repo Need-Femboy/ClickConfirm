@@ -19,7 +19,7 @@ import javax.inject.Inject;
 @Slf4j
 @PluginDescriptor(
 	name = "Click Confirm",
-	description = "Plays a client-side click sound when you perform specific actions."
+	description = "Plays a client-side click sound when you perform actions."
 )
 public class ClickConfirm extends Plugin {
 
