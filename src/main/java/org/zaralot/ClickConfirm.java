@@ -127,7 +127,7 @@ public class ClickConfirm extends Plugin {
 		if(option == null) return false;
 		option = option.toUpperCase();
 
-		if(option.equals("CAST")){
+		if(option.equals("CAST") || option.equals("BREAK")){
 			this.playSound();
 			return true;
 		}
