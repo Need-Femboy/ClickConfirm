@@ -239,8 +239,7 @@ public class ClickConfirm extends Plugin
 			return false;
 		}
 		option = option.toUpperCase();
-		
-		if (option.contains("USE") && target.contains("Special Attack"))
+		if (option.equals("USE <COL=00FF00>SPECIAL ATTACK</COL>") || (option.contains("USE") && target.contains("Special Attack")))
 		{
 			this.processClickLocation(menuEntry);
 			return true;
