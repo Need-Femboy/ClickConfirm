@@ -4,10 +4,13 @@ import com.google.inject.Provides;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
+import net.runelite.api.MenuAction;
 import net.runelite.api.MenuEntry;
 import net.runelite.api.Point;
 import net.runelite.api.SoundEffectID;
 import net.runelite.api.events.MenuOptionClicked;
+import net.runelite.api.widgets.ComponentID;
+import net.runelite.api.widgets.Widget;
 import net.runelite.client.RuneLite;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
@@ -22,6 +25,7 @@ import javax.sound.sampled.BooleanControl;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineEvent;
+import java.awt.*;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -123,7 +127,7 @@ public class ClickConfirm extends Plugin
 		
 		if (option.equals("WEAR") || option.equals("WIELD"))
 		{
-			this.playSound();
+			this.processClickLocation(menuEntry);
 			return true;
 		}
 		
@@ -146,7 +150,7 @@ public class ClickConfirm extends Plugin
 		
 		if (option.equals("DRINK") || option.equals("HEAL"))
 		{
-			this.playSound();
+			this.processClickLocation(menuEntry);
 			return true;
 		}
 		
@@ -169,7 +173,7 @@ public class ClickConfirm extends Plugin
 		
 		if (option.equals("EAT") || option.equals("HEAL"))
 		{
-			this.playSound();
+			this.processClickLocation(menuEntry);
 			return true;
 		}
 		
@@ -192,7 +196,7 @@ public class ClickConfirm extends Plugin
 		
 		if (option.equals("TOGGLE RUN"))
 		{
-			this.playSound();
+			this.processClickLocation(menuEntry);
 			return true;
 		}
 		
@@ -215,7 +219,7 @@ public class ClickConfirm extends Plugin
 		
 		if (option.equals("CAST") || option.equals("BREAK"))
 		{
-			this.playSound();
+			this.processClickLocation(menuEntry);
 			return true;
 		}
 		
@@ -238,7 +242,7 @@ public class ClickConfirm extends Plugin
 		
 		if (option.contains("USE") && target.contains("Special Attack"))
 		{
-			this.playSound();
+			this.processClickLocation(menuEntry);
 			return true;
 		}
 		
@@ -261,32 +265,59 @@ public class ClickConfirm extends Plugin
 		
 		if (option.equals("ACTIVATE") || option.equals("DEACTIVATE"))
 		{
-			this.playSound();
+			this.processClickLocation(menuEntry);
 			return true;
 		}
 		
 		if (target.equalsIgnoreCase("Quick-prayers"))
 		{
-			this.playSound();
+			this.processClickLocation(menuEntry);
 			return true;
 		}
 		
 		return false;
 	}
 	
-	private void playSound()
+	private void processClickLocation(MenuEntry entry)
 	{
-		playSound(false);
-	}
-	
-	private void playSound(boolean skipcheck)
-	{
-		Point mousePosition = client.getMouseCanvasPosition();
+		Point mousePosition = null;
+		int param1 = entry.getParam1(); //Widget ID
+		if (config.centreOnWidget() && param1 != -1 && (entry.getType().equals(MenuAction.CC_OP) || entry.getType().equals(MenuAction.CC_OP_LOW_PRIORITY)))
+		{
+			Widget widget;
+			
+			if (param1 == ComponentID.INVENTORY_CONTAINER)
+			{
+				widget = client.getWidget(ComponentID.INVENTORY_CONTAINER).getChild(entry.getParam0());
+			}
+			else
+			{
+				widget = client.getWidget(param1);
+			}
+			
+			if (widget != null && !widget.isHidden())
+			{
+				Rectangle bounds = widget.getBounds();
+				int x = bounds.x + (bounds.width / 2);
+				int y = bounds.y + (bounds.height / 2);
+				mousePosition = new Point(x, y);
+			}
+		}
+		else
+		{
+			mousePosition = client.getMouseCanvasPosition();
+		}
+		
 		if (mousePosition != null)
 		{
 			clickedPoints.add(new ClickedPoint(mousePosition, System.currentTimeMillis()));
 		}
 		
+		playSound(false);
+	}
+	
+	private void playSound(boolean skipcheck)
+	{
 		if (config.useCustomSoundFile() && !skipcheck)
 		{
 			playSoundFile();
@@ -306,7 +337,7 @@ public class ClickConfirm extends Plugin
 			playSound(true);
 			return;
 		}
-
+		
 		Clip clip = null;
 		try
 		{

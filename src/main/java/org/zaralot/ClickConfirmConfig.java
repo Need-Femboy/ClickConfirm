@@ -126,12 +126,24 @@ public interface ClickConfirmConfig extends Config
 		return true;
 	}
 	
+	@ConfigItem(
+			keyName = "centreOnWidget",
+			name = "Centre on click",
+			description = "Attempts to centre the visual indicator on what you have clicked rather than where you clicked exactly",
+			position = 0,
+			section = circleOverlaySettings
+	)
+	default boolean centreOnWidget()
+	{
+		return false;
+	}
+	
 	@Units(Units.PIXELS)
 	@ConfigItem(
 			keyName = "circleMinSize",
 			name = "Minimum circle size",
 			description = "",
-			position = 1,
+			position = 2,
 			section = circleOverlaySettings
 	)
 	default int circleMinSize()
@@ -144,7 +156,7 @@ public interface ClickConfirmConfig extends Config
 			keyName = "circleMaxSize",
 			name = "Maximum circle size",
 			description = "",
-			position = 2,
+			position = 3,
 			section = circleOverlaySettings
 	)
 	default int circleMaxSize()
@@ -157,7 +169,7 @@ public interface ClickConfirmConfig extends Config
 			keyName = "circleColour",
 			name = "Circle colour",
 			description = "",
-			position = 3,
+			position = 4,
 			section = circleOverlaySettings
 	)
 	default Color circleColour()
