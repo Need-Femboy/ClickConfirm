@@ -16,7 +16,7 @@ public interface ClickConfirmConfig extends Config
 	@ConfigItem(
 			keyName = "useCustomSoundFile",
 			name = "Enable custom sound file",
-			description = "You can use a custom sound file by creating a file at \".runelite\\click.wav\""
+			description = "You can use a custom sound file by creating a file at \".runelite\\clickconfirm\\click.wav\""
 	)
 	default boolean useCustomSoundFile()
 	{
