@@ -285,9 +285,9 @@ public class ClickConfirm extends Plugin
 		{
 			Widget widget;
 			
-			if (param1 == ComponentID.INVENTORY_CONTAINER)
+			if (param1 == ComponentID.INVENTORY_CONTAINER || param1 == ComponentID.BANK_INVENTORY_ITEM_CONTAINER)
 			{
-				widget = client.getWidget(ComponentID.INVENTORY_CONTAINER).getChild(entry.getParam0());
+				widget = client.getWidget(param1).getChild(entry.getParam0());
 			}
 			else
 			{
