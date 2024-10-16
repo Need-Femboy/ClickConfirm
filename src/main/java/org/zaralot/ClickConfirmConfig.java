@@ -1,22 +1,39 @@
 package org.zaralot;
 
-import lombok.AllArgsConstructor;
-import net.runelite.client.config.*;
+import net.runelite.client.config.Alpha;
+import net.runelite.client.config.Config;
+import net.runelite.client.config.ConfigGroup;
+import net.runelite.client.config.ConfigItem;
+import net.runelite.client.config.ConfigSection;
+import net.runelite.client.config.Range;
+import net.runelite.client.config.Units;
 
-import java.awt.*;
+import java.awt.Color;
 
 @ConfigGroup("clickconfirm")
 public interface ClickConfirmConfig extends Config
 {
-	
+	@ConfigItem(
+			keyName = "useCustomSoundFile",
+			name = "Enable custom sound file",
+			description = "You can use a custom sound file by creating a file at \".runelite\\click.wav\""
+	)
+	default boolean useCustomSoundFile()
+	{
+		return false;
+	}
+	@Range(
+			min = 0,
+			max = 127
+	)
 	@ConfigItem(
 			keyName = "clickVolume",
 			name = "Click volume",
 			description = "Volume of the sound effect"
 	)
-	default SoundEffectVolume clickVolume()
+	default int clickVolume()
 	{
-		return SoundEffectVolume.HIGH;
+		return 64;
 	}
 	
 	
@@ -153,15 +170,5 @@ public interface ClickConfirmConfig extends Config
 	{
 		CLICK,
 		
-	}
-	
-	@AllArgsConstructor
-	enum SoundEffectVolume
-	{
-		LOW(32),
-		MEDIUM_LOW(64),
-		MEDIUM_HIGH(96),
-		HIGH(127);
-		public final int volume;
 	}
 }
