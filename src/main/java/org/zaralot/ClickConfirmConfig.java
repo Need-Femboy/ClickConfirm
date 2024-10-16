@@ -1,14 +1,14 @@
 package org.zaralot;
 
 import lombok.AllArgsConstructor;
-import net.runelite.client.config.Config;
-import net.runelite.client.config.ConfigGroup;
-import net.runelite.client.config.ConfigItem;
-import net.runelite.client.config.Range;
+import net.runelite.client.config.*;
+
+import java.awt.*;
 
 @ConfigGroup("clickconfirm")
 public interface ClickConfirmConfig extends Config
 {
+	
 	@ConfigItem(
 			keyName = "clickVolume",
 			name = "Click volume",
@@ -18,12 +18,7 @@ public interface ClickConfirmConfig extends Config
 	{
 		return SoundEffectVolume.HIGH;
 	}
-	@ConfigItem(
-			keyName = "enableOverlay",
-			name = "Enable Overlay",
-			description = ""
-	)
-	default boolean enableOverlay() {return true;}
+	
 	
 	@ConfigItem(
 			keyName = "onEquip",
@@ -95,12 +90,71 @@ public interface ClickConfirmConfig extends Config
 		return true;
 	}
 	
+	@ConfigSection(
+			name = "Circle settings",
+			description = "",
+			position = 999
+	)
+	String circleOverlaySettings = "Circle settings";
+	
+	@ConfigItem(
+			keyName = "enableOverlay",
+			name = "Enable Overlay",
+			description = "",
+			position = 0,
+			section = circleOverlaySettings
+	)
+	default boolean enableOverlay()
+	{
+		return true;
+	}
+	
+	@Units(Units.PIXELS)
+	@ConfigItem(
+			keyName = "circleMinSize",
+			name = "Minimum circle size",
+			description = "",
+			position = 1,
+			section = circleOverlaySettings
+	)
+	default int circleMinSize()
+	{
+		return 6;
+	}
+	
+	@Units(Units.PIXELS)
+	@ConfigItem(
+			keyName = "circleMaxSize",
+			name = "Maximum circle size",
+			description = "",
+			position = 2,
+			section = circleOverlaySettings
+	)
+	default int circleMaxSize()
+	{
+		return 18;
+	}
+	
+	@Alpha
+	@ConfigItem(
+			keyName = "circleColour",
+			name = "Circle colour",
+			description = "",
+			position = 3,
+			section = circleOverlaySettings
+	)
+	default Color circleColour()
+	{
+		return Color.RED;
+	}
+	
 	
 	enum ConfirmSound
 	{
 		CLICK,
 		
 	}
+	
 	@AllArgsConstructor
 	enum SoundEffectVolume
 	{

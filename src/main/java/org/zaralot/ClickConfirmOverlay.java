@@ -11,6 +11,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
 
 public class ClickConfirmOverlay extends Overlay
 {
@@ -35,27 +36,40 @@ public class ClickConfirmOverlay extends Overlay
 		{
 			return null;
 		}
+		
 		long currentTime = System.currentTimeMillis();
-		plugin.getClickedPoints().removeIf(x -> currentTime - x.getTimeClicked() >= 601);
+		int minSize = config.circleMinSize();
+		int maxSize = config.circleMaxSize();
+		Color color = config.circleColour();
+		int red = color.getRed();
+		int green = color.getGreen();
+		int blue = color.getBlue();
+		int baseAlpha = color.getAlpha();
+		Stroke stroke = new BasicStroke(2);
+		
+		graphics.setStroke(stroke);
+		
+		plugin.getClickedPoints().removeIf(x -> currentTime - x.getTimeClicked() > 600);
 		for (ClickedPoint clickedPoint : plugin.getClickedPoints())
 		{
 			long timeElapsed = currentTime - clickedPoint.getTimeClicked();
-			float progress = Math.min(1.0f, (float) timeElapsed / 600);
-			
-			int alpha = (int) ((1.0f - progress) * 255);
-			if (alpha < 0) alpha = 0;
-			
+			float progress = (float) timeElapsed / 600;
 			Point canvasPoint = clickedPoint.getCanvasPoint();
+			int alpha = (int) ((1.0f - progress) * baseAlpha);
+			
+			alpha = Math.max(0, alpha);
 			
 			if (canvasPoint != null)
 			{
-				graphics.setColor(new Color(255, 0, 0, alpha));
-				graphics.setStroke(new BasicStroke(2));
+				int circleSize = (int) (minSize + (maxSize - minSize) * progress);
+				int x = canvasPoint.getX() - circleSize / 2;
+				int y = canvasPoint.getY() - circleSize / 2;
 				
-				int circleSize = (int) (24 + 12 * progress);
-				graphics.drawOval(canvasPoint.getX() - circleSize / 2, canvasPoint.getY() - circleSize / 2, circleSize, circleSize);
+				graphics.setColor(new Color(red, green, blue, alpha));
+				graphics.drawOval(x, y, circleSize, circleSize);
 			}
 		}
+		
 		return null;
 	}
 }
