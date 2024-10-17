@@ -1,5 +1,6 @@
 package org.zaralot;
 
+import lombok.AllArgsConstructor;
 import net.runelite.client.config.Alpha;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
@@ -121,7 +122,7 @@ public interface ClickConfirmConfig extends Config
 			keyName = "centreOnWidget",
 			name = "Centre on click",
 			description = "Attempts to centre the visual indicator on what you have clicked rather than where you clicked exactly",
-			position = 0,
+			position = 1,
 			section = circleOverlaySettings
 	)
 	default boolean centreOnWidget()
@@ -129,12 +130,24 @@ public interface ClickConfirmConfig extends Config
 		return false;
 	}
 	
+	@ConfigItem(
+			keyName = "visualIndicatorStyle",
+			name = "Visual Indicator Style",
+			description = "",
+			position = 2,
+			section = circleOverlaySettings
+	)
+	default VisualIndicatorType visualIndicatorStyle()
+	{
+		return VisualIndicatorType.HOLLOW_CIRCLE;
+	}
+	
 	@Units(Units.PIXELS)
 	@ConfigItem(
 			keyName = "circleMinSize",
-			name = "Minimum circle size",
+			name = "Minimum indicator size",
 			description = "",
-			position = 2,
+			position = 3,
 			section = circleOverlaySettings
 	)
 	default int circleMinSize()
@@ -145,9 +158,9 @@ public interface ClickConfirmConfig extends Config
 	@Units(Units.PIXELS)
 	@ConfigItem(
 			keyName = "circleMaxSize",
-			name = "Maximum circle size",
+			name = "Maximum indicator size",
 			description = "",
-			position = 3,
+			position = 4,
 			section = circleOverlaySettings
 	)
 	default int circleMaxSize()
@@ -158,9 +171,9 @@ public interface ClickConfirmConfig extends Config
 	@Alpha
 	@ConfigItem(
 			keyName = "circleColour",
-			name = "Circle colour",
+			name = "Indicator colour",
 			description = "",
-			position = 4,
+			position = 5,
 			section = circleOverlaySettings
 	)
 	default Color circleColour()
@@ -168,10 +181,11 @@ public interface ClickConfirmConfig extends Config
 		return Color.RED;
 	}
 	
-	
-	enum ConfirmSound
+	@AllArgsConstructor
+	enum VisualIndicatorType
 	{
-		CLICK,
-		
+		HOLLOW_CIRCLE("Hollow circle"),
+		FILLED_CIRCLE("Filled circle");
+		private final String name;
 	}
 }

@@ -66,7 +66,17 @@ public class ClickConfirmOverlay extends Overlay
 				int y = canvasPoint.getY() - circleSize / 2;
 				
 				graphics.setColor(new Color(red, green, blue, alpha));
-				graphics.drawOval(x, y, circleSize, circleSize);
+				switch (config.visualIndicatorStyle())
+				{
+					default:
+					case HOLLOW_CIRCLE:
+						graphics.drawOval(x, y, circleSize, circleSize);
+						break;
+					case FILLED_CIRCLE:
+						graphics.fillOval(x, y, circleSize, circleSize);
+						break;
+				}
+				
 			}
 		}
 		
