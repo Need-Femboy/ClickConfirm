@@ -7,7 +7,6 @@ import net.runelite.api.Client;
 import net.runelite.api.MenuAction;
 import net.runelite.api.MenuEntry;
 import net.runelite.api.Point;
-import net.runelite.api.SoundEffectID;
 import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.widgets.ComponentID;
 import net.runelite.api.widgets.Widget;
@@ -312,38 +311,40 @@ public class ClickConfirm extends Plugin
 			clickedPoints.add(new ClickedPoint(mousePosition, System.currentTimeMillis()));
 		}
 		
-		playSound(false);
+		playSound();
 	}
 	
-	private void playSound(boolean skipcheck)
-	{
-		if (config.useCustomSoundFile() && !skipcheck)
-		{
-			playSoundFile();
-		}
-		else
-		{
-			this.client.playSoundEffect(SoundEffectID.ITEM_PICKUP, config.clickVolume());
-		}
-	}
-	
-	private void playSoundFile()
+	private void playSound()
 	{
 		File fileLocation = new File(RuneLite.RUNELITE_DIR, "clickconfirm\\click.wav");
+		boolean loadFromStream = false;
 		
 		if (!Files.exists(fileLocation.toPath()))
 		{
-			playSound(true);
-			return;
+			loadFromStream = true;
 		}
 		
 		Clip clip = null;
 		try
 		{
 			clip = AudioSystem.getClip();
-			InputStream fileStream = new BufferedInputStream(
-					new FileInputStream(fileLocation)
-			);
+			InputStream fileStream;
+			if (loadFromStream)
+			{
+				InputStream click = ClickConfirm.class.getResourceAsStream("click.wav");
+				if (click == null)
+				{
+					log.warn("Could not play custom sound file from resources and no file existed at {}", fileLocation.toPath());
+					return;
+				}
+				fileStream = new BufferedInputStream(click);
+			}
+			else
+			{
+				fileStream = new BufferedInputStream(
+						new FileInputStream(fileLocation)
+				);
+			}
 			AudioInputStream inputStream = AudioSystem.getAudioInputStream(fileStream);
 			clip.open(inputStream);
 			if (clip.isControlSupported(FloatControl.Type.MASTER_GAIN))
@@ -351,8 +352,7 @@ public class ClickConfirm extends Plugin
 				BooleanControl muteControl = (BooleanControl) clip.getControl(BooleanControl.Type.MUTE);
 				muteControl.setValue(false);
 				FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-				int soundVol = (int) Math.round(config.clickVolume() / 1.27);
-				float newVol = (float) (Math.log((double) soundVol / 100) / Math.log(10.0) * 20.0);
+				float newVol = (float) (Math.log((double) config.clickVolume() / 100) / Math.log(10.0) * 20.0);
 				gainControl.setValue(newVol);
 			}
 			clip.start();

@@ -13,18 +13,9 @@ import java.awt.Color;
 @ConfigGroup("clickconfirm")
 public interface ClickConfirmConfig extends Config
 {
-	@ConfigItem(
-			keyName = "useCustomSoundFile",
-			name = "Enable custom sound file",
-			description = "You can use a custom sound file by creating a file at \".runelite\\clickconfirm\\click.wav\""
-	)
-	default boolean useCustomSoundFile()
-	{
-		return false;
-	}
 	@Range(
 			min = 0,
-			max = 127
+			max = 100
 	)
 	@ConfigItem(
 			keyName = "clickVolume",
@@ -33,7 +24,7 @@ public interface ClickConfirmConfig extends Config
 	)
 	default int clickVolume()
 	{
-		return 64;
+		return 50;
 	}
 	
 	
